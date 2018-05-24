@@ -44,6 +44,7 @@ public class ch4_2_histogram {
     
     //int maxWorkGroupSize;
     static int HIST_BINS = 256;
+    static int SELECTED_PLATFORM = 0;    
     
     public static void main(String[] args) throws Exception {
 
@@ -54,9 +55,9 @@ public class ch4_2_histogram {
         // <editor-fold defaultstate="collasped" desc="Step 1 & 2, get platform and devices and create a context">
         CLPlatform[] platform = CLPlatform.listCLPlatforms();
         
-        System.out.println(platform[1]);
+        System.out.println(platform[SELECTED_PLATFORM]);
         
-        CLContext context = CLContext.create(platform[1]);
+        CLContext context = CLContext.create(platform[SELECTED_PLATFORM]);
     
         CLDevice devices[] = context.getDevices();
                 
@@ -238,6 +239,9 @@ public class ch4_2_histogram {
         System.out.println("Processing...");
         long time = nanoTime();
         
+        /* 
+        For some reason localMemSize is 0MB on desktop. Maybe on Windows, graphics displays can't also be used for OpenCL?
+        */
         queue.putWriteBuffer(clBufferInputInts, false)
             .put1DRangeKernel(kernel, 0, globalWorkSize, localWorkSize)
             .putReadBuffer(clBufferHistogram, true);
