@@ -13,6 +13,7 @@ import com.jogamp.opencl.CLCommandQueue;
 import com.jogamp.opencl.CLKernel;
 import static com.jogamp.opencl.CLMemory.Mem.READ_ONLY;
 import static com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY;
+import com.jogamp.opencl.CLPlatform;
 import com.jogamp.opencl.CLProgram;
 import java.awt.Point;
 
@@ -38,23 +39,34 @@ import javax.imageio.ImageIO;
  */
 public class ch4_2_histogram {
     
-    static CLContext context;
-    static CLDevice devices[];
+    //static CLContext context;
+    //static CLDevice devices[];
     
-    static int maxWorkGroupSize;
+    //int maxWorkGroupSize;
     static int HIST_BINS = 256;
     
     public static void main(String[] args) throws Exception {
 
-        System.out.println("ch4_2_histogram()");             
-        
+        System.out.println("ch4_2_histogram()");
+              
+        int maxWorkGroupSize;
         
         // <editor-fold defaultstate="collasped" desc="Step 1 & 2, get platform and devices and create a context">
+        CLPlatform[] platform = CLPlatform.listCLPlatforms();
         
-        context = CLContext.create();
-        devices = context.getDevices();
+        System.out.println(platform[1]);
+        
+        CLContext context = CLContext.create(platform[1]);
+    
+        CLDevice devices[] = context.getDevices();
                 
         int deviceIndex = SelectDevice.SelectDevice(context, devices);
+        
+        if(deviceIndex < 0) {
+            System.out.println("Exiting...");
+            context.release();
+            return;
+        }
         
         if(deviceIndex < 0) {
             System.out.println("Exiting...");
@@ -81,7 +93,7 @@ public class ch4_2_histogram {
         
         try (ByteArrayOutputStream boas = new ByteArrayOutputStream()) {
             
-            File bmpFile = new File("Resources/Images/countryside.bmp");
+            File bmpFile = new File("Resources/Images/cat-face.bmp");
             inputBufferedImage = ImageIO.read(bmpFile);
             
             
@@ -160,7 +172,7 @@ public class ch4_2_histogram {
         int elementCount = inputIntArray.length;                        
         
         // lenght of arrays to process
-        int localWorkSize = min(maxWorkGroupSize, 128);                 // local work size dimensions  
+        int localWorkSize = min(maxWorkGroupSize, 1024);                 // local work size dimensions  
         int globalWorkSize = roundUp(localWorkSize, elementCount);      // rounded up to the nearest multiple of the localWorkSize, aka compute units available in the hardware.
         
         System.out.println("Selected Device: " + queue.getDevice().getName()
@@ -251,8 +263,6 @@ public class ch4_2_histogram {
         
         //<editor-fold defaultstate="collasped" desc="Step 10, release resources">        
         streamIn.close();
-        
-        //System.out.println(context.ID);
         
         context.release();                             
         

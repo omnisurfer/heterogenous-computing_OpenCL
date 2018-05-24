@@ -35,25 +35,25 @@ import java.util.Random;
  */
 public class ch3_6_example {
     
-    static CLContext context;
-    static CLDevice devices[];
-    static int maxWorkGroupSize;            
+    //static CLContext context;
+    //static CLDevice devices[];
+    //static int maxWorkGroupSize;            
     
     public static void main(String[] args) throws Exception {
 
         System.out.println("ch3_6_example()");             
+         
+        int maxWorkGroupSize;  
         
         // <editor-fold defaultstate="collasped" desc="Step 1 & 2, get platform and devices and create a context">
-        
         CLPlatform[] platform = CLPlatform.listCLPlatforms();
-        
-        // CLPlatform platform = CLPlatform.
         
         System.out.println(platform[1]);
         
-        context = CLContext.create(platform[1]);
-        devices = context.getDevices();
-                
+        CLContext context = CLContext.create(platform[1]);
+    
+        CLDevice devices[] = context.getDevices();
+                              
         int deviceIndex = SelectDevice.SelectDevice(context, devices);
         
         if(deviceIndex < 0) {
