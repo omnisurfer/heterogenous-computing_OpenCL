@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.sandbox</groupId>
+    <artifactId>heterogenous_computing</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>       
+      
+    <!--https://jogamp.org/wiki/index.php/Maven
+    
+        https://jogamp.org/wiki/index.php/Downloading_and_installing_JOGL  
+        Also helps with installing JOCL
+        
+        https://jogamp.org/bugzilla/show_bug.cgi?id=1172 - linux amd64 native 
+        lib is getting overwritten by the linix ARM native lib      
+        
+        https://jogamp.org/bugzilla/show_bug.cgi?id=1172
+        
+        http://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html
+        
+        http://jogamp.org/wiki/index.php/Maven_And_Android
+        http://jogamp.org/wiki/index.php/JogAmp_JAR_File_Handling#Maven_Assembly_Plugin
+        http://jogamp.org/git/?p=jogl-demos.git;a=blob;f=maven/jp4da/jp4da-android/pom.xml
+        - Multi platform Maven Project example with jogamp. May provide ideas
+        about how to stop including ARM dependencies.
+        
+        https://blog.packagecloud.io/eng/2017/03/09/how-does-a-maven-repository-work/
+    -->           
+    <dependencies>
+        <!--dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+          <artifactId>gluegen-rt-main</artifactId>
+          <version>2.3.1</version>
+        </dependency-->     
+        <!--dependency>
+          <groupId>org.jogamp.jogl</groupId>
+          <artifactId>jogl-all</artifactId>
+          <version>2.3.1</version>
+          <classifier>natives-linux-amd64</classifier>
+        </dependency-->
+        <dependency>
+          <groupId>org.jogamp.jocl</groupId>
+          <artifactId>jocl-main</artifactId>
+          <version>2.3.1</version>                
+        </dependency>
+        <!--dependency>
+          <groupId>org.jogamp.joal</groupId>
+          <artifactId>joal-main</artifactId>
+          <version>2.3.1</version>
+        </dependency-->
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>2.3.1</version>
+            <classifier>natives-windows-amd64</classifier>
+        </dependency>
+    </dependencies>
+    
+    <build>  
+        <resources>
+            <resource>
+                <directory>Resources/ComputeKernels</directory>
+                <includes>
+                    <include>**/*.cl</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>      
+            <!--Build an executable JAR-->     
+            <!--plugin>              
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.1.0</version>
+              <configuration>
+                <archive>
+                  <manifest>
+                    <addClasspath>true</addClasspath>
+                    <classpathPrefix>lib/</classpathPrefix>
+                    <mainClass>com.sandbox.heterogenous_computing.Main</mainClass>
+                  </manifest>
+                </archive>                
+              </configuration>
+            </plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>single</goal>                      
+                    </goals>
+                  </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                      <manifest>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>lib/</classpathPrefix>
+                        <mainClass>com.sandbox.heterogenous_computing.Main</mainClass>
+                      </manifest>
+                    </archive>
+                    <descriptorRefs>
+                      <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>                                                                  
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+        
+</project>
