@@ -55,6 +55,10 @@ public class Main {
                 com.sandbox.heterogenous_computing.ch4_2_histogram.main(args);
                 break;
                 
+            case "3":
+                com.sandbox.heterogenous_computing.ch4_3_rotation.main(args);
+                break;
+                
             default:
                 System.out.println("Invalid selection.");
         }
@@ -67,7 +71,8 @@ public class Main {
         System.out.println(
             "Select which example to run:"
             + "\n\t1) Ch 3.6, Example"
-            + "\n\t2) Ch 4.2, Histogram"                            
+            + "\n\t2) Ch 4.2, Histogram"
+            + "\n\t3) Ch 4.3 Rotation"
         );        
     }
 }

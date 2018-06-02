@@ -130,8 +130,8 @@ public class ch3_6_example {
         System.out.println("Processing...");
         long time = nanoTime();
         
-        queue.putWriteBuffer(clBufferA, false)
-            .putWriteBuffer(clBufferB, false)
+        queue.putWriteBuffer(clBufferA, true)
+            .putWriteBuffer(clBufferB, true)
             .put1DRangeKernel(kernel, 0, globalWorkSize, localWorkSize)
             .putReadBuffer(clBufferC, true);
         
