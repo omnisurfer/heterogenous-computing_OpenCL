@@ -241,8 +241,10 @@ public class ch4_2_histogram {
         
         /* 
         For some reason localMemSize is 0MB on desktop. Maybe on Windows, graphics displays can't also be used for OpenCL?
+        Also, maybe windows is reading the cl code incorrectly (long shot)?
+        https://software.intel.com/en-us/forums/opencl/topic/697202
         */
-        queue.putWriteBuffer(clBufferInputInts, false)
+        queue.putWriteBuffer(clBufferInputInts, true)
             .put1DRangeKernel(kernel, 0, globalWorkSize, localWorkSize)
             .putReadBuffer(clBufferHistogram, true);
         

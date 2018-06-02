@@ -37,7 +37,8 @@ public class ch3_6_example {
     
     //static CLContext context;
     //static CLDevice devices[];
-    //static int maxWorkGroupSize;            
+    //static int maxWorkGroupSize;    
+    static int SELECTED_DEVICE = 0;
     
     public static void main(String[] args) throws Exception {
 
@@ -48,9 +49,9 @@ public class ch3_6_example {
         // <editor-fold defaultstate="collasped" desc="Step 1 & 2, get platform and devices and create a context">
         CLPlatform[] platform = CLPlatform.listCLPlatforms();
         
-        System.out.println(platform[1]);
+        System.out.println(platform[SELECTED_DEVICE]);
         
-        CLContext context = CLContext.create(platform[1]);
+        CLContext context = CLContext.create(platform[SELECTED_DEVICE]);
     
         CLDevice devices[] = context.getDevices();
                               
