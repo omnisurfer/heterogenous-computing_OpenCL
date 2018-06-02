@@ -53,15 +53,20 @@ public class ch4_2_histogram {
         int maxWorkGroupSize;
         
         // <editor-fold defaultstate="collasped" desc="Step 1 & 2, get platform and devices and create a context">
-        CLPlatform[] platform = CLPlatform.listCLPlatforms();
+        CLPlatform[] platforms = CLPlatform.listCLPlatforms();
         
-        System.out.println(platform[SELECTED_PLATFORM]);
+        int platformIndex = SelectPlatformDevice.selectPlatform(platforms);
         
-        CLContext context = CLContext.create(platform[SELECTED_PLATFORM]);
+        if(platformIndex < 0) {
+            System.out.println("Exiting...");            
+            return;
+        }
+        
+        CLContext context = CLContext.create(platforms[platformIndex]);
     
         CLDevice devices[] = context.getDevices();
                 
-        int deviceIndex = SelectDevice.SelectDevice(context, devices);
+        int deviceIndex = SelectPlatformDevice.selectDevice(context, devices);
         
         if(deviceIndex < 0) {
             System.out.println("Exiting...");
@@ -256,7 +261,7 @@ public class ch4_2_histogram {
         
         System.out.println("histogram results snapshot: ");        
         
-        for(int i = 0; i < 256; i++)
+        for(int i = 0; i < clBufferHistogram.getCLCapacity(); i++)
             System.out.println(clBufferHistogram.getBuffer().get() + ",");
         
         int remaining = clBufferHistogram.getBuffer().remaining();
@@ -267,10 +272,14 @@ public class ch4_2_histogram {
         
         //</editor-fold>
         
-        //<editor-fold defaultstate="collasped" desc="Step 10, release resources">        
-        streamIn.close();
+        //<editor-fold defaultstate="collasped" desc="Step 10, release resources">                        
+                        
+        context.release();                         
         
-        context.release();                             
+        while(!context.isReleased())
+            System.out.println("Waiting for context to be released");
+        
+        streamIn.close();
         
         // </editor-fold>                
     }

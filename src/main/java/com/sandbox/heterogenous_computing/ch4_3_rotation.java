@@ -5,28 +5,21 @@
  */
 package com.sandbox.heterogenous_computing;
 
-
 import static com.jogamp.common.nio.Buffers.newDirectFloatBuffer;
-import com.jogamp.opencl.CLBuffer;
 import com.jogamp.opencl.CLContext;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLCommandQueue;
-import com.jogamp.opencl.CLImage;
 import com.jogamp.opencl.CLImage2d;
 import com.jogamp.opencl.CLImageFormat;
 import com.jogamp.opencl.CLKernel;
-import com.jogamp.opencl.CLMemory;
-import static com.jogamp.opencl.CLMemory.Mem.READ_ONLY;
+import com.jogamp.opencl.CLPlatform;
 import com.jogamp.opencl.CLProgram;
-import com.jogamp.opencl.gl.CLGLImage2d;
 import java.awt.Point;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferFloat;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -36,9 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Math.*;
 import static java.lang.System.nanoTime;
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 
@@ -47,7 +38,7 @@ import javax.imageio.ImageIO;
  * @author danielrowan
  */
 public class ch4_3_rotation {
-        
+          
     public static void main(String[] args) throws Exception {
 
         System.out.println("ch4_3_rotation()");             
@@ -56,10 +47,21 @@ public class ch4_3_rotation {
         
         int maxWorkGroupSize;
         
-        CLContext context = CLContext.create();
+        CLPlatform[] platforms = CLPlatform.listCLPlatforms();
+        
+        int platformIndex = SelectPlatformDevice.selectPlatform(platforms);
+        
+        if(platformIndex < 0) {
+            System.out.println("Exiting...");            
+            return;
+        }
+        
+        CLContext context = CLContext.create(platforms[platformIndex]);
+        
+        //CLContext context = CLContext.create();
         CLDevice devices[] = context.getDevices();
                 
-        int deviceIndex = SelectDevice.SelectDevice(context, devices);
+        int deviceIndex = SelectPlatformDevice.selectDevice(context, devices);
         
         if(deviceIndex < 0) {
             System.out.println("Exiting...");
@@ -158,8 +160,7 @@ public class ch4_3_rotation {
                                                                                    
         // <editor-fold desc="Image description setup">
         CLImageFormat clImageFormat = new CLImageFormat(CLImageFormat.ChannelOrder.R, CLImageFormat.ChannelType.FLOAT);
-        
-        
+                
         //Search in jogamp forum: CLImage2D example program - Exception while executing kernel
         CLImage2d<FloatBuffer> inputImageMemory = context.createImage2d(
                 newDirectFloatBuffer(inputFloatImageArray),

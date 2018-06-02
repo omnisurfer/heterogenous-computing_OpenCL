@@ -47,15 +47,20 @@ public class ch3_6_example {
         int maxWorkGroupSize;  
         
         // <editor-fold defaultstate="collasped" desc="Step 1 & 2, get platform and devices and create a context">
-        CLPlatform[] platform = CLPlatform.listCLPlatforms();
+        CLPlatform[] platforms = CLPlatform.listCLPlatforms();
         
-        System.out.println(platform[SELECTED_DEVICE]);
+        int platformIndex = SelectPlatformDevice.selectPlatform(platforms);
         
-        CLContext context = CLContext.create(platform[SELECTED_DEVICE]);
+        if(platformIndex < 0) {
+            System.out.println("Exiting...");            
+            return;
+        }
+        
+        CLContext context = CLContext.create(platforms[platformIndex]);
     
         CLDevice devices[] = context.getDevices();
                               
-        int deviceIndex = SelectDevice.SelectDevice(context, devices);
+        int deviceIndex = SelectPlatformDevice.selectDevice(context, devices);
         
         if(deviceIndex < 0) {
             System.out.println("Exiting...");
