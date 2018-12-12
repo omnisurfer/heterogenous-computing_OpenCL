@@ -49,3 +49,6 @@ nb-configuration.xml
 
 # OS
 .DS_Store
+
+
+*.bmp
