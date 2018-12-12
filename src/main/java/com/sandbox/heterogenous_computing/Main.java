@@ -59,6 +59,10 @@ public class Main {
                 com.sandbox.heterogenous_computing.ch4_3_rotation.main(args);
                 break;
                 
+            case "4":
+                com.sandbox.heterogenous_computing.ch4_4_convolution.main(args);
+            break;
+                
             default:
                 System.out.println("Invalid selection.");
         }
@@ -73,6 +77,7 @@ public class Main {
             + "\n\t1) Ch 3.6, Example"
             + "\n\t2) Ch 4.2, Histogram"
             + "\n\t3) Ch 4.3 Rotation"
+            + "\n\t4) Ch 4.4 Convolution"
         );        
     }
 }
